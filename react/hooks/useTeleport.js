@@ -14,7 +14,7 @@ function createTeleportElement() {
  * 傳送元素到 body el (default #tp575)
  * @template T
  * @param {T} children
- * @param {HTMLElement | undefined} el
+ * @param {HTMLElement | undefined} [el]
  * @return {T}
  */
 function useTeleport(children, el) {
