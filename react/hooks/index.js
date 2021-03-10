@@ -5,6 +5,7 @@ import useMethods from './useMethods'
 import useLoad from './useLoad'
 import useBoolean from './useBoolean'
 import useDebounce from './useDebounce'
+import useProvider from './useProvider'
 
 export {
 	useLocalStorageState,
@@ -14,4 +15,5 @@ export {
 	useLoad,
 	useBoolean,
 	useDebounce,
+	useProvider,
 }
