@@ -13,7 +13,6 @@ function useDebounce(fun, delay = 500) {
 	return useCallback(
 		(...args) => {
 			const { current } = timer
-			current.stop()
 			current.start(() => fun(...args), delay)
 		},
 		[fun, delay],
