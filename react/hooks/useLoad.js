@@ -18,11 +18,6 @@ function useLoad(promiseFun, options) {
 		loading: false,
 	})
 
-	const getRemoveThrottle = useCallback(key => {
-		delete throttle.current[key]
-		return Object.keys(throttle.current).length ? throttle.current : false
-	}, [])
-
 	const pFun = useCallback(async (fun, key, ...args) => {
 		if (throttle.current[key]) {
 			return
@@ -32,11 +27,13 @@ function useLoad(promiseFun, options) {
 		try {
 			setState({ error: undefined, pending: throttle.current, loading: true })
 			const result = await fun.call(promiseFun, ...args)
-			setState({ error: undefined, pending: getRemoveThrottle(key), loading: false })
+			delete throttle.current[key]
+			setState({ error: undefined, pending: throttle.current, loading: Object.keys(throttle.current).length > 0 })
 			return result
 		} catch (error) {
 			console.error(error)
-			setState({ error, pending: getRemoveThrottle(key), loading: false })
+			delete throttle.current[key]
+			setState({ error, pending: throttle.current, loading: Object.keys(throttle.current).length > 0 })
 		}
 	}, [])
 
