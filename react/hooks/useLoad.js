@@ -5,7 +5,7 @@ import { useCallback, useEffect, useMemo, useRef, useState, MutableRefObject } f
  * @template T
  * @param {Promise<*> | T} promiseFun
  * @param {{append?: (HTMLElement | MutableRefObject<HTMLElement>), run?: (string | boolean | Array.<string, ...*>)}} [options= { run: 'run' }] options
- * @returns {{pending: (boolean | Object.<keyof T, boolean>), error: string, exec: (T & { run: function(...args): Promise<*> })}}
+ * @returns {{error: string, pending: Object.<keyof T, boolean>, loading: boolean, exec: (T & { run: function(...args): Promise<*> })}}
  */
 function useLoad(promiseFun, options) {
 	const isFun = useMemo(() => typeof promiseFun === 'function', [promiseFun])
@@ -14,7 +14,8 @@ function useLoad(promiseFun, options) {
 	const throttle = useRef({})
 	const [state, setState] = useState({
 		error: undefined,
-		pending: false,
+		pending: {},
+		loading: false,
 	})
 
 	const getRemoveThrottle = useCallback(key => {
@@ -29,13 +30,13 @@ function useLoad(promiseFun, options) {
 		throttle.current[key] = true
 
 		try {
-			setState({ error: undefined, pending: throttle.current })
+			setState({ error: undefined, pending: throttle.current, loading: true })
 			const result = await fun.call(promiseFun, ...args)
-			setState({ error: undefined, pending: getRemoveThrottle(key) })
+			setState({ error: undefined, pending: getRemoveThrottle(key), loading: false })
 			return result
 		} catch (error) {
 			console.error(error)
-			setState({ error, pending: getRemoveThrottle(key) })
+			setState({ error, pending: getRemoveThrottle(key), loading: false })
 		}
 	}, [])
 
@@ -59,7 +60,7 @@ function useLoad(promiseFun, options) {
 		}
 	}, [])
 
-	return { error: state.error, pending: state.pending, exec }
+	return { error: state.error, pending: state.pending, loading: state.loading, exec }
 }
 
 export default useLoad
