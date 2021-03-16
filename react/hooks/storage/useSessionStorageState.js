@@ -8,7 +8,7 @@ import { getStorageItem, useUpdateStorage } from './util'
  * @param {T} initialValue
  * @returns {[T, Dispatch<T>]}
  */
-function useSessionStorageState(key, initialValue) {
+const useSessionStorageState = (key, initialValue) => {
 	const [state, setState] = useState(
 		getStorageItem(key, initialValue, sessionStorage),
 	)

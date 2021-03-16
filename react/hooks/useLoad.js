@@ -1,4 +1,11 @@
-import { useCallback, useEffect, useMemo, useRef, useState, MutableRefObject } from 'react'
+import {
+	useCallback,
+	useEffect,
+	useMemo,
+	useRef,
+	useState,
+	MutableRefObject,
+} from 'react'
 
 /**
  * 加載用鉤子
@@ -7,7 +14,7 @@ import { useCallback, useEffect, useMemo, useRef, useState, MutableRefObject } f
  * @param {{append?: (HTMLElement | MutableRefObject<HTMLElement>), run?: (string | boolean | Array.<string, ...*>)}} [options= { run: 'run' }] options
  * @returns {{error: string, pending: Object.<keyof T, boolean>, loading: boolean, exec: (T & { run: function(...args): Promise<*> })}}
  */
-function useLoad(promiseFun, options) {
+const useLoad = (promiseFun, options) => {
 	const isFun = useMemo(() => typeof promiseFun === 'function', [promiseFun])
 	const run = useRef(options?.run ?? 'run')
 	const append = useRef(options?.append)
@@ -28,12 +35,20 @@ function useLoad(promiseFun, options) {
 			setState({ error: undefined, pending: throttle.current, loading: true })
 			const result = await fun.call(promiseFun, ...args)
 			delete throttle.current[key]
-			setState({ error: undefined, pending: throttle.current, loading: Object.keys(throttle.current).length > 0 })
+			setState({
+				error: undefined,
+				pending: throttle.current,
+				loading: Object.keys(throttle.current).length > 0,
+			})
 			return result
 		} catch (error) {
 			console.error(error)
 			delete throttle.current[key]
-			setState({ error, pending: throttle.current, loading: Object.keys(throttle.current).length > 0 })
+			setState({
+				error,
+				pending: throttle.current,
+				loading: Object.keys(throttle.current).length > 0,
+			})
 		}
 	}, [])
 
@@ -41,7 +56,12 @@ function useLoad(promiseFun, options) {
 		if (isFun) {
 			return { run: async (...args) => await pFun(promiseFun, 'run', ...args) }
 		} else {
-			return Object.keys(promiseFun).reduce((p, e) => (p[e] = async (...args) => await pFun(promiseFun[e], e, ...args), p), {})
+			return Object.keys(promiseFun).reduce(
+				(p, e) => (
+					(p[e] = async (...args) => await pFun(promiseFun[e], e, ...args)), p
+				),
+				{},
+			)
 		}
 	}, [promiseFun, pFun])
 
@@ -57,7 +77,12 @@ function useLoad(promiseFun, options) {
 		}
 	}, [])
 
-	return { error: state.error, pending: state.pending, loading: state.loading, exec }
+	return {
+		error: state.error,
+		pending: state.pending,
+		loading: state.loading,
+		exec,
+	}
 }
 
 export default useLoad

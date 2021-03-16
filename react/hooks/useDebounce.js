@@ -7,7 +7,7 @@ import { timeout } from '../../lib'
  * @param {number} [delay=500] delay
  * @returns {function(...*): void}
  */
-function useDebounce(fun, delay = 500) {
+const useDebounce = (fun, delay = 500) => {
 	const timer = useRef(timeout())
 
 	return useCallback(

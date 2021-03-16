@@ -6,7 +6,7 @@ import React, { createContext, useContext } from 'react'
  * @param {function(): T} providerService
  * @return {{inject: function(): T, Provider: function({children: *}): *}}
  */
-function useProvider(providerService) {
+const useProvider = providerService => {
 	const Context = createContext(null)
 
 	const Provider = ({ children }) => (

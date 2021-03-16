@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 
-export function getStorageItem(key, initialValue, storage) {
+export const getStorageItem = (key, initialValue, storage) => {
 	const storageValue = storage.getItem(key)
 	if (storageValue == null) {
 		return initialValue
@@ -12,7 +12,7 @@ export function getStorageItem(key, initialValue, storage) {
 	}
 }
 
-export function useUpdateStorage(key, value, storage) {
+export const useUpdateStorage = (key, value, storage) => {
 	useEffect(() => {
 		if (value == null) {
 			storage.removeItem(key)

@@ -9,7 +9,7 @@ import { useMemo, useState } from 'react'
  * @param {T} methods
  * @returns {[S, T]}
  */
-function useMethods (initialValue, methods) {
+const useMethods = (initialValue, methods) => {
 	const [state, setState] = useState(initialValue)
 	const bindMethods = useMemo(
 		() =>
