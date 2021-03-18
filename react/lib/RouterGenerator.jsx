@@ -52,11 +52,11 @@ const recurRoutes = (prefix, routes, ParentRender, dataRoutes = []) => {
 }
 
 const RouteWrap = ({ RouteComp, beforeEnter }) => {
+	const location = useLocation()
 	const condState = {
 		ok: true,
 		redirectTo: undefined,
 	}
-	const location = useLocation()
 	ROUTE_INFO.meta = ROUTES_META[location.pathname]
 	ROUTE_INFO.to = location
 	if (ROUTE_INFO.from == null) {
@@ -74,6 +74,19 @@ const RouteWrap = ({ RouteComp, beforeEnter }) => {
 	return <RouteComp jslLocation={ROUTE_INFO} />
 }
 
+/**
+ * 初始化路由
+ * @typedef {Object} Route
+ * @property {string} path
+ * @property {React.ReactNode} component
+ * @property {*} redirect
+ * @property {function(to: *, from: *, next: function(path?: *): void): void} beforeEnter
+ * @property {React.ReactNode} render
+ * @property {Object} meta
+ * @property {Route[]} children
+ * @param {Route[]} routes
+ * @return {React.ReactNode[]}
+ */
 const init = (routes = []) =>
 	recurRoutes('', routes).map(
 		({ path, component: RouteComp, redirect, beforeEnter, render: Render }) => (
@@ -96,6 +109,10 @@ const init = (routes = []) =>
 		),
 	)
 
+/**
+ * 全局 beforeEnter
+ * @param {function(to: *, from: *, next: function(path?: *): void): void} fun
+ */
 const beforeEnter = fun => {
 	globalBeforeEnter = fun
 }
