@@ -1,3 +1,3 @@
-import routerGenerator from './routerGenerator'
+import RouterGenerator from './RouterGenerator'
 
-export { routerGenerator }
+export { RouterGenerator }
