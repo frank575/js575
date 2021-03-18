@@ -71,7 +71,9 @@ const routerGenerator = (() => {
 	}
 
 	const mapRoutes = (routes, groupKey) =>
-		routes.map(({ path, component: RouteComp, redirect, beforeEnter }) => (
+		routes[
+			groupKey
+		].map(({ path, component: RouteComp, redirect, beforeEnter }) => (
 			<Route
 				key={path}
 				path={path}
@@ -104,9 +106,13 @@ const routerGenerator = (() => {
 			},
 			create: groupKey => {
 				if (groupKey == null) {
-					return mapRoutes(groupRoutes.$$common)
+					const routes = []
+					for (const k in groupRoutes) {
+						routes.push(mapRoutes(groupRoutes, k))
+					}
+					return routes
 				} else {
-					return mapRoutes(groupRoutes[groupKey], groupKey)
+					return mapRoutes(groupRoutes, groupKey)
 				}
 			},
 		}
