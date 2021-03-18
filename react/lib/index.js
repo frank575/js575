@@ -1,3 +1,3 @@
-import matchRoutes from './matchRoutes'
+import RouterGenerator from './RouterGenerator'
 
-export { matchRoutes }
+export { RouterGenerator }

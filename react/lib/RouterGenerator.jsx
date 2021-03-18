@@ -1,7 +1,7 @@
 import React, { useMemo, useRef } from 'react'
 import { Redirect, Route, useLocation } from 'react-router-dom'
 
-const matchRoutes = (() => {
+const RouterGenerator = (() => {
 	let preRoute, curRoute, globalBeforeEnter
 	const routesMeta = {}
 
@@ -43,8 +43,8 @@ const matchRoutes = (() => {
 		const location = useLocation()
 
 		useMemo(() => {
-			const { beforeEnter, path } = jsl
-			const newLocation = { ...location, meta: routesMeta[path] }
+			const { beforeEnter, path, group } = jsl
+			const newLocation = { ...location, meta: routesMeta[path], group }
 			preRoute = curRoute
 			if (preRoute == null) {
 				preRoute = newLocation
@@ -56,7 +56,12 @@ const matchRoutes = (() => {
 			if (beforeEnter != null) {
 				beforeEnter(curRoute, preRoute, next(nextOk, redirectPath))
 			}
-			jslData.current = { from: preRoute, to: curRoute, meta: newLocation.meta }
+			jslData.current = {
+				from: preRoute,
+				to: curRoute,
+				meta: newLocation.meta,
+				group,
+			}
 		}, [])
 
 		if (redirectPath.current != null)
@@ -65,30 +70,47 @@ const matchRoutes = (() => {
 		return <RouteComp jslData={jslData.current} />
 	}
 
-	return routes => {
-		const _routes = recurRoutes('', routes)
+	const mapRoutes = (routes, groupKey) =>
+		routes.map(({ path, component: RouteComp, redirect, beforeEnter }) => (
+			<Route
+				key={path}
+				path={path}
+				exact
+				render={() =>
+					redirect == null ? (
+						<RouteWrap
+							RouteComp={RouteComp}
+							jsl={{ beforeEnter, path, group: groupKey }}
+						/>
+					) : (
+						<Redirect to={redirect} />
+					)
+				}
+			/>
+		))
+
+	return (routes = []) => {
+		const groupRoutes = {}
+		if (Array.isArray(routes)) {
+			groupRoutes.$$common = recurRoutes('', routes)
+		} else {
+			for (const k in routes) {
+				groupRoutes[k] = recurRoutes('', routes[k])
+			}
+		}
 		return {
 			beforeEnter: fun => {
 				globalBeforeEnter = fun
 			},
-			Routes: _routes.map(
-				({ path, component: RouteComp, redirect, beforeEnter }) => (
-					<Route
-						key={path}
-						path={path}
-						exact
-						render={() =>
-							redirect == null ? (
-								<RouteWrap RouteComp={RouteComp} jsl={{ beforeEnter, path }} />
-							) : (
-								<Redirect to={redirect} />
-							)
-						}
-					/>
-				),
-			),
+			create: groupKey => {
+				if (groupKey == null) {
+					return mapRoutes(groupRoutes.$$common)
+				} else {
+					return mapRoutes(groupRoutes[groupKey], groupKey)
+				}
+			},
 		}
 	}
 })()
 
-export default matchRoutes
+export default RouterGenerator
