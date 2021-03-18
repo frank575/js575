@@ -62,7 +62,7 @@ const routerGenerator = (() => {
 				meta: newLocation.meta,
 				group,
 			}
-		}, [])
+		}, [jsl])
 
 		if (redirectPath.current != null)
 			return <Redirect to={redirectPath.current} />
