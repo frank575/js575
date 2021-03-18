@@ -1,4 +1,4 @@
-import { useMemo, useRef } from 'react'
+import React, { useMemo, useRef } from 'react'
 import { Redirect, Route, useLocation } from 'react-router-dom'
 
 const matchRoutes = (() => {
