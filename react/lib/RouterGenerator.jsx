@@ -1,4 +1,4 @@
-import React, { useRef } from 'react'
+import React from 'react'
 import { Redirect, Route, useLocation } from 'react-router-dom'
 
 let globalBeforeEnter
@@ -9,15 +9,15 @@ const ROUTE_INFO = {
 }
 const ROUTES_META = {}
 
-const next = (okRef, pathRef) => {
-	okRef.current = false
+const next = state => {
+	state.ok = false
 	return path => {
 		if (path != null) {
-			if (pathRef.current == null) {
-				pathRef.current = path
+			if (state.redirectTo == null) {
+				state.redirectTo = path
 			}
 		} else {
-			okRef.current = true
+			state.ok = true
 		}
 	}
 }
@@ -52,37 +52,26 @@ const recurRoutes = (prefix, routes, ParentRender, dataRoutes = []) => {
 }
 
 const RouteWrap = ({ RouteComp, beforeEnter }) => {
-	const nextOk = useRef(true)
-	const redirectPath = useRef(undefined)
+	const condState = {
+		ok: true,
+		redirectTo: undefined,
+	}
 	const location = useLocation()
 	ROUTE_INFO.meta = ROUTES_META[location.pathname]
-	ROUTE_INFO.from = ROUTE_INFO.to
+	ROUTE_INFO.to = location
 	if (ROUTE_INFO.from == null) {
 		ROUTE_INFO.from = location
 	}
-	ROUTE_INFO.to = location
 	if (globalBeforeEnter != null) {
-		globalBeforeEnter(
-			ROUTE_INFO.to,
-			ROUTE_INFO.from,
-			next(nextOk, redirectPath),
-		)
+		globalBeforeEnter(ROUTE_INFO.to, ROUTE_INFO.from, next(condState))
 	}
 	if (beforeEnter != null) {
-		beforeEnter(ROUTE_INFO.to, ROUTE_INFO.from, next(nextOk, redirectPath))
+		beforeEnter(ROUTE_INFO.to, ROUTE_INFO.from, next(condState))
 	}
-	if (redirectPath.current != null)
-		return <Redirect to={redirectPath.current} />
-	if (!nextOk.current) return <>route next can't empty</>
-	return (
-		<RouteComp
-			jslLocation={{
-				from: ROUTE_INFO.from,
-				to: ROUTE_INFO.to,
-				meta: ROUTE_INFO.meta,
-			}}
-		/>
-	)
+	if (condState.redirectTo != null)
+		return <Redirect to={condState.redirectTo} />
+	if (!condState.ok) return <>route next can't empty</>
+	return <RouteComp jslLocation={ROUTE_INFO} />
 }
 
 const init = (routes = []) =>
@@ -97,6 +86,7 @@ const init = (routes = []) =>
 						const RW = (
 							<RouteWrap RouteComp={RouteComp} beforeEnter={beforeEnter} />
 						)
+						ROUTE_INFO.from = ROUTE_INFO.to
 						return Render == null ? RW : <Render>{RW}</Render>
 					} else {
 						return <Redirect to={redirect} />
