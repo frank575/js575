@@ -70,10 +70,10 @@ const routerGenerator = (() => {
 		return <RouteComp jslData={jslData.current} />
 	}
 
-	const mapRoutes = (routes, groupKey) =>
-		routes[
+	const mapRoutes = (group, groupKey) =>
+		group[
 			groupKey
-		].map(({ path, component: RouteComp, redirect, beforeEnter }) => (
+		].routes.map(({ path, component: RouteComp, redirect, beforeEnter }) => (
 			<Route
 				key={path}
 				path={path}
@@ -92,12 +92,16 @@ const routerGenerator = (() => {
 		))
 
 	return (routes = []) => {
-		const groupRoutes = {}
+		const group = {}
 		if (Array.isArray(routes)) {
-			groupRoutes.$$common = recurRoutes('', routes)
+			group.$$common = {}
+			group.$$common.routes = recurRoutes('', routes)
 		} else {
 			for (const k in routes) {
-				groupRoutes[k] = recurRoutes('', routes[k])
+				const item = routes[k]
+				group[k] = {}
+				group[k].render = item.render
+				group[k].routes = recurRoutes('', item.routes)
 			}
 		}
 		return {
@@ -107,12 +111,22 @@ const routerGenerator = (() => {
 			create: groupKey => {
 				if (groupKey == null) {
 					const routes = []
-					for (const k in groupRoutes) {
-						routes.push(mapRoutes(groupRoutes, k))
+					for (const k in group) {
+						const { render } = group[k]
+						if (render == null) {
+							routes.push(mapRoutes(group, k))
+						} else {
+							routes.push(render(mapRoutes(group, k)))
+						}
 					}
 					return routes
 				} else {
-					return mapRoutes(groupRoutes, groupKey)
+					const { render } = group[groupKey]
+					if (render == null) {
+						return mapRoutes(group, groupKey)
+					} else {
+						return render(mapRoutes(group, groupKey))
+					}
 				}
 			},
 		}
