@@ -1,7 +1,7 @@
 import React, { useMemo, useRef } from 'react'
 import { Redirect, Route, useLocation } from 'react-router-dom'
 
-const RouterGenerator = (() => {
+const routerGenerator = (() => {
 	let preRoute, curRoute, globalBeforeEnter
 	const routesMeta = {}
 
@@ -113,4 +113,4 @@ const RouterGenerator = (() => {
 	}
 })()
 
-export default RouterGenerator
+export default routerGenerator
