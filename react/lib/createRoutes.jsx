@@ -1,12 +1,13 @@
 import React from 'react'
-import { Redirect, Route } from 'react-router-dom'
+import { Redirect, Route, Switch } from 'react-router-dom'
 
 /**
- * 初始化路由
+ * 路由生成器
  *
  * @typedef {Object} Route
  * @property {string} path
  * @property {React.ReactNode} component
+ * @property {React.ReactNode} notFound
  * @property {*} redirect
  * @property {Route[]} children
  *
@@ -14,69 +15,139 @@ import { Redirect, Route } from 'react-router-dom'
  * @returns {{Routes: React.ReactNode[]}}
  */
 const createRoutes = routes => {
-	const recurGenerator = (
-		routes,
-		ParentComponent,
-		prefix = '',
-		redirectComps = [],
-		routeComps = [],
-	) => {
-		routes.forEach(e => {
-			e.path = prefix + e.path
-			if (e.redirect != null) {
-				redirectComps.push(
-					<Redirect key={e.path} path={e.path} to={e.redirect} exact />,
-				)
-			}
-			if (ParentComponent != null) {
-				if (e.component != null) {
-					const Component = e.component
-					e.component = props => (
-						<ParentComponent {...props}>
-							<Component {...props}>{props.children}</Component>
-						</ParentComponent>
-					)
-				} else {
-					e.component = ParentComponent
-				}
-			}
-			if (e.children != null) {
-				const nextPath = e.path === '/' ? e.path : e.path + '/'
-				recurGenerator(
-					e.children,
-					e.component,
-					nextPath,
-					redirectComps,
-					routeComps,
-				)
-			} else {
-				if (e.component) {
-					routeComps.push(
-						<Route key={e.path} path={e.path} exact component={e.component} />,
-					)
-				}
-			}
-		})
-		return redirectComps.concat(routeComps)
+	const Redirects = []
+	const Routes = []
+	const recurMap = (children, parent, prefix) => {
+		const generatorSwitch = () => (
+			<Switch>
+				{children.map(e => {
+					e.path = `${prefix}${e.path}`
+					if (e.redirect) {
+						Redirects.push(
+							<Redirect key={e.path} path={e.path} to={e.redirect} exact />,
+						)
+					}
+					if (parent.notFound && !e.notFound) {
+						e.notFound = parent.notFound
+					}
+					if (e.children) {
+						const nextPath = e.path === '/' ? e.path : e.path + '/'
+						return recurMap(e.children, e, nextPath)
+					} else {
+						const routes = [
+							<Route key={e.path} path={e.path} exact>
+								<e.component />
+							</Route>,
+						]
+						if (parent.notFound) {
+							routes.push(
+								<Route key={e.path}>
+									<parent.notFound />
+								</Route>,
+							)
+						}
+						return routes
+					}
+				})}
+			</Switch>
+		)
+		return (
+			<Route key={parent.path} path={parent.path}>
+				{parent.component ? (
+					<parent.component>{generatorSwitch()}</parent.component>
+				) : (
+					generatorSwitch()
+				)}
+			</Route>
+		)
 	}
+
+	routes.forEach(e => {
+		if (e.redirect) {
+			Redirects.push(
+				<Redirect key={e.path} path={e.path} to={e.redirect} exact />,
+			)
+		}
+		if (e.children) {
+			const nextPath = e.path === '/' ? e.path : e.path + '/'
+			Routes.push(recurMap(e.children, e, nextPath))
+		} else {
+			Routes.push(
+				<Route key={e.path} path={e.path} exact>
+					<e.component />
+				</Route>,
+			)
+		}
+	})
 
 	return {
-		Routes: recurGenerator(routes),
+		Routes: Redirects.concat(Routes),
 	}
 }
-
 /*
-	編譯結果
-	<Redirect path={'/dash'} to={'/dash/example'} exact />
-	<Redirect path={'/dash/example'} to={'/dash/example/example'} exact />
-	<Route path={'/dash/example/example'}>
-		<div>123</div>
-		<Example />
+	[
+		{
+			path: '/',
+			component: Home,
+		},
+		{
+			path: '/a',
+			notFound: NotFound1,
+			redirect: '/a/a',
+			component: Wrap1,
+			children: [
+				{
+					path: 'a',
+					redirect: '/a/a/a',
+					notFound: NotFound12,
+					component: Wrap2,
+					children: [
+						{
+							path: 'a',
+							component: Home,
+						},
+					],
+				},
+				{
+					path: 'b',
+					component: Home,
+				},
+			],
+		},
+	]
+
+	前↑  前↑  前↑  前↑  前↑  前↑  前↑  前↑  前↑  前↑
+	編譯結果大致如下：
+	後↓  後↓  後↓  後↓  後↓  後↓  後↓  後↓  後↓  後↓
+
+	<Redirect path={'/a'} to={'/a/a'} exact />
+	<Redirect path={'/a/a'} to={'/a/a/a'} exact />
+	<Route path={'/'} exact>
+		<Home />
 	</Route>
-	<Route path={'/dash/example2'}>
-		<div>123</div>
-		<div>456</div>
-		<Example />
+	<Route path={'/a'}>
+		<Wrap1>
+			<Switch>
+				<Route path={'/a/a'}>
+					<Wrap2>
+						<Switch>
+							<Route path={'/a/a/a'} exact>
+								<Home />
+							</Route>
+							<Route>
+								<NotFound2 />
+							</Route>
+						</Switch>
+					</Wrap2>
+				</Route>
+				<Route path={'/a/b'} exact>
+					<Home />
+				</Route>
+				<Route>
+					<NotFound1 />
+				</Route>
+			</Switch>
+		</Wrap1>
 	</Route>
- */
+*/
 export default createRoutes
