@@ -14,9 +14,5 @@
   "bugs": {
     "url": "https://github.com/frank575/jsl/issues"
   },
-  "homepage": "https://github.com/frank575/jsl#readme",
-  "dependencies": {
-    "react": "^17.0.1",
-    "react-router-dom": "^5.2.0"
-  }
+  "homepage": "https://github.com/frank575/jsl#readme"
 }
