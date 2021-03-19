@@ -36,6 +36,8 @@ const createRoutes = routes => {
 							<Component {...props}>{props.children}</Component>
 						</ParentComponent>
 					)
+				} else {
+					e.component = ParentComponent
 				}
 			}
 			if (e.children != null) {
