@@ -1,3 +1,3 @@
-import RouterGenerator from './RouterGenerator'
+import createRoutes from './createRoutes'
 
-export { RouterGenerator }
+export { createRoutes }
