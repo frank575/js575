@@ -3,9 +3,7 @@
   "version": "0.0.0",
   "description": "我的 JS 庫",
   "main": "lib/index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
+  "scripts": {},
   "repository": {
     "type": "git",
     "url": "git+https://github.com/frank575/jsl.git"
@@ -16,5 +14,9 @@
   "bugs": {
     "url": "https://github.com/frank575/jsl/issues"
   },
-  "homepage": "https://github.com/frank575/jsl#readme"
+  "homepage": "https://github.com/frank575/jsl#readme",
+  "dependencies": {
+    "react": "^17.0.1",
+    "react-router-dom": "^5.2.0"
+  }
 }
