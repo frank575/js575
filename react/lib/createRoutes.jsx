@@ -20,7 +20,7 @@ const createRoutes = routes => {
 	const recurMap = (children, parent, prefix) => {
 		const generatorSwitch = () => (
 			<Switch>
-				{children.map(e => {
+				{children.map((e, i) => {
 					e.path = `${prefix}${e.path}`
 					if (e.redirect) {
 						Redirects.push(
@@ -39,7 +39,7 @@ const createRoutes = routes => {
 								<e.component />
 							</Route>,
 						]
-						if (parent.notFound) {
+						if (i === children.length - 1 && parent.notFound) {
 							routes.push(
 								<Route key={e.path}>
 									<parent.notFound />
@@ -106,6 +106,10 @@ const createRoutes = routes => {
 							path: 'a',
 							component: Home,
 						},
+						{
+							path: 'b',
+							component: Home,
+						},
 					],
 				},
 				{
@@ -132,6 +136,9 @@ const createRoutes = routes => {
 					<Wrap2>
 						<Switch>
 							<Route path={'/a/a/a'} exact>
+								<Home />
+							</Route>
+							<Route path={'/a/a/b'} exact>
 								<Home />
 							</Route>
 							<Route>
