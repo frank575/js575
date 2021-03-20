@@ -1,4 +1,9 @@
-import React, { createContext, useContext } from 'react'
+import _React, { createContext, useContext } from 'react'
+
+let React
+if (process.env.NODE_ENV === 'production') {
+	React = _React
+}
 
 /**
  * 創建供給者

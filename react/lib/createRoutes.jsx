@@ -1,5 +1,10 @@
-import React from 'react'
+import _React from 'react'
 import { Redirect, Route, Switch } from 'react-router-dom'
+
+let React
+if (process.env.NODE_ENV === 'production') {
+	React = _React
+}
 
 /**
  * 路由生成器
