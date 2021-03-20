@@ -2,7 +2,7 @@
   "name": "jsl",
   "version": "0.0.0",
   "description": "我的 JS 庫",
-  "main": "lib/index.js",
+  "main": "src/js/lib/index.js",
   "scripts": {},
   "repository": {
     "type": "git",
