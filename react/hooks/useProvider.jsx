@@ -1,5 +1,4 @@
-import _React, { createContext, useContext } from 'react'
-const React = _React
+import React, { createContext, useContext } from 'react'
 
 /**
  * 創建供給者
