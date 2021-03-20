@@ -1,4 +1,4 @@
-import React, { createContext, useContext } from 'react'
+import { createContext, useContext } from 'react'
 
 /**
  * 創建供給者
@@ -9,9 +9,7 @@ import React, { createContext, useContext } from 'react'
 const useProvider = providerService => {
 	const Context = createContext(null)
 
-	const Provider = ({ children }) => (
-		<Context.Provider value={providerService()}>{children}</Context.Provider>
-	)
+	const Provider = ({ children }) => Context.Provider({value: providerService(), children})
 
 	const inject = () => useContext(Context)
 
