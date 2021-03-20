@@ -2,7 +2,9 @@ import _React from 'react'
 import { Redirect, Route, Switch } from 'react-router-dom'
 
 if (process.env.NODE_ENV === 'production') {
-	React = _React
+	try {
+		React = _React
+	} catch {}
 }
 
 /**
