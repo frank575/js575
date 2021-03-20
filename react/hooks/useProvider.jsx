@@ -1,10 +1,5 @@
-import _React, { createContext, useContext } from 'react'
+import { createContext, useContext } from 'react'
 
-if (process.env.NODE_ENV === 'production') {
-	try {
-		React = _React
-	} catch {}
-}
 
 /**
  * 創建供給者
