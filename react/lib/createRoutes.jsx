@@ -1,4 +1,5 @@
-import { Redirect, Route, Switch } from 'react-router-dom'
+import _React, { Redirect, Route, Switch } from 'react-router-dom'
+const React = _React
 
 /**
  * 路由生成器
