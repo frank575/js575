@@ -8,9 +8,7 @@ import React, { createContext, useContext } from 'react'
  */
 const useProvider = providerService => {
 	const Context = createContext(null)
-
-	const Provider = ({ children }) => Context.Provider({value: providerService(), children})
-
+	const Provider = ({ children }) => <Context.Provider value={providerService()}>{children}</Context.Provider>
 	const inject = () => useContext(Context)
 
 	return {
