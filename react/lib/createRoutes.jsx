@@ -17,33 +17,34 @@ import { Redirect, Route, Switch } from 'react-router-dom'
 const createRoutes = routes => {
 	const Redirects = []
 	const Routes = []
-	const recurMap = (children, parent, prefix) => {
+	const recurMap = (
+		parentChildren,
+		{ path: parentPath, notFound: ParentNotFound, component: ParentComponent },
+		prefix,
+	) => {
 		const generatorSwitch = () => (
 			<Switch>
-				{children.map((e, i) => {
-					e.path = `${prefix}${e.path}`
-					if (e.redirect) {
+				{parentChildren.map((e, i) => {
+					const { redirect, children, component: Component } = e
+					const path = `${prefix}${e.path}`
+					if (redirect) {
 						Redirects.push(
-							<Redirect key={e.path} path={e.path} to={e.redirect} exact />,
+							<Redirect key={path} path={path} to={redirect} exact />,
 						)
 					}
-					if (parent.notFound && !e.notFound) {
-						e.notFound = parent.notFound
+					if (ParentNotFound && !e.notFound) {
+						e.notFound = ParentNotFound
 					}
-					if (e.children) {
-						const nextPath = e.path === '/' ? e.path : e.path + '/'
-						return recurMap(e.children, e, nextPath)
+					if (children) {
+						const nextPath = path === '/' ? path : path + '/'
+						return recurMap(children, e, nextPath)
 					} else {
 						const routes = [
-							<Route key={e.path} path={e.path} exact>
-								<e.component />
-							</Route>,
+							<Route key={path} path={path} exact component={Component} />,
 						]
-						if (i === children.length - 1 && parent.notFound) {
+						if (i === parentChildren.length - 1 && ParentNotFound) {
 							routes.push(
-								<Route key={e.path}>
-									<parent.notFound />
-								</Route>,
+								<Route key={`${path}404`} component={ParentNotFound} />,
 							)
 						}
 						return routes
@@ -51,32 +52,30 @@ const createRoutes = routes => {
 				})}
 			</Switch>
 		)
+
 		return (
-			<Route key={parent.path} path={parent.path}>
-				{parent.component ? (
-					<parent.component>{generatorSwitch()}</parent.component>
-				) : (
-					generatorSwitch()
-				)}
+			<Route key={parentPath} path={parentPath}>
+				{props =>
+					ParentComponent ? (
+						<ParentComponent {...props}>{generatorSwitch()}</ParentComponent>
+					) : (
+						generatorSwitch()
+					)
+				}
 			</Route>
 		)
 	}
 
 	routes.forEach(e => {
-		if (e.redirect) {
-			Redirects.push(
-				<Redirect key={e.path} path={e.path} to={e.redirect} exact />,
-			)
+		const { redirect, path, children, component: Component } = e
+		if (redirect) {
+			Redirects.push(<Redirect key={path} path={path} to={redirect} exact />)
 		}
-		if (e.children) {
-			const nextPath = e.path === '/' ? e.path : e.path + '/'
-			Routes.push(recurMap(e.children, e, nextPath))
+		if (children) {
+			const nextPath = path === '/' ? path : path + '/'
+			Routes.push(recurMap(children, e, nextPath))
 		} else {
-			Routes.push(
-				<Route key={e.path} path={e.path} exact>
-					<e.component />
-				</Route>,
-			)
+			Routes.push(<Route key={path} path={path} exact component={Component} />)
 		}
 	})
 
@@ -126,35 +125,27 @@ const createRoutes = routes => {
 
 	<Redirect path={'/a'} to={'/a/a'} exact />
 	<Redirect path={'/a/a'} to={'/a/a/a'} exact />
-	<Route path={'/'} exact>
-		<Home />
-	</Route>
+	<Route path={'/'} exact component={Home} />
 	<Route path={'/a'}>
-		<Wrap1>
-			<Switch>
-				<Route path={'/a/a'}>
-					<Wrap2>
-						<Switch>
-							<Route path={'/a/a/a'} exact>
-								<Home />
-							</Route>
-							<Route path={'/a/a/b'} exact>
-								<Home />
-							</Route>
-							<Route>
-								<NotFound2 />
-							</Route>
-						</Switch>
-					</Wrap2>
-				</Route>
-				<Route path={'/a/b'} exact>
-					<Home />
-				</Route>
-				<Route>
-					<NotFound1 />
-				</Route>
-			</Switch>
-		</Wrap1>
+		{props =>
+			<Wrap1 {...props}>
+				<Switch>
+					<Route path={'/a/a'}>
+						{props =>
+							<Wrap2 {...props}>
+								<Switch>
+									<Route path={'/a/a/a'} exact component={Home} />
+									<Route path={'/a/a/b'} exact component={Home} />
+									<Route component={NotFound2} />
+								</Switch>
+							</Wrap2>
+						}
+					</Route>
+					<Route path={'/a/b'} exact component={Home} />
+					<Route component={NotFound1} />
+				</Switch>
+			</Wrap1>
+		}
 	</Route>
 */
 export default createRoutes
