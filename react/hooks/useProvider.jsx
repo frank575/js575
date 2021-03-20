@@ -1,6 +1,5 @@
 import _React, { createContext, useContext } from 'react'
 
-let React = React
 if (process.env.NODE_ENV === 'production') {
 	React = _React
 }
