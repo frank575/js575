@@ -1,4 +1,5 @@
-import _React, { Redirect, Route, Switch } from 'react-router-dom'
+import _React from 'react'
+import { Redirect, Route, Switch } from 'react-router-dom'
 const React = _React
 
 /**
