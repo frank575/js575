@@ -19,32 +19,46 @@ const createRoutes = routes => {
 	const Routes = []
 	const recurMap = (
 		parentChildren,
-		{ path: parentPath, notFound: ParentNotFound, component: ParentComponent },
+		ParentNotFound,
+		{ path: parentPath, component: ParentComponent },
 		prefix,
 	) => {
-		const generatorSwitch = () => (
+		const Children = (
 			<Switch>
 				{parentChildren.map((e, i) => {
-					const { redirect, children, component: Component } = e
-					const path = `${prefix}${e.path}`
+					const {
+						path,
+						redirect,
+						children,
+						component: Component,
+						notFound: NotFound,
+					} = e
+					const concatPath = `${prefix}${path}`
 					if (redirect) {
 						Redirects.push(
-							<Redirect key={path} path={path} to={redirect} exact />,
+							<Redirect
+								key={concatPath}
+								path={concatPath}
+								to={redirect}
+								exact
+							/>,
 						)
 					}
-					if (ParentNotFound && !e.notFound) {
-						e.notFound = ParentNotFound
-					}
 					if (children) {
-						const nextPath = path === '/' ? path : path + '/'
-						return recurMap(children, e, nextPath)
+						const nextPath = concatPath === '/' ? concatPath : concatPath + '/'
+						return recurMap(children, NotFound || ParentNotFound, e, nextPath)
 					} else {
 						const routes = [
-							<Route key={path} path={path} exact component={Component} />,
+							<Route
+								key={concatPath}
+								path={concatPath}
+								exact
+								component={Component}
+							/>,
 						]
 						if (i === parentChildren.length - 1 && ParentNotFound) {
 							routes.push(
-								<Route key={`${path}404`} component={ParentNotFound} />,
+								<Route key={`${concatPath}--404`} component={ParentNotFound} />,
 							)
 						}
 						return routes
@@ -52,32 +66,38 @@ const createRoutes = routes => {
 				})}
 			</Switch>
 		)
-
 		return (
-			<Route key={parentPath} path={parentPath}>
+			<Route key={prefix} path={prefix}>
 				{props =>
 					ParentComponent ? (
-						<ParentComponent {...props}>{generatorSwitch()}</ParentComponent>
+						<ParentComponent {...props}>{Children}</ParentComponent>
 					) : (
-						generatorSwitch()
+						Children
 					)
 				}
 			</Route>
 		)
 	}
 
-	routes.forEach(e => {
-		const { redirect, path, children, component: Component } = e
+	for (let i = 0; i < routes.length; i++) {
+		const e = routes[i]
+		const {
+			redirect,
+			path,
+			children,
+			component: Component,
+			notFound: NotFound,
+		} = e
 		if (redirect) {
 			Redirects.push(<Redirect key={path} path={path} to={redirect} exact />)
 		}
 		if (children) {
 			const nextPath = path === '/' ? path : path + '/'
-			Routes.push(recurMap(children, e, nextPath))
+			Routes.push(recurMap(children, NotFound, e, nextPath))
 		} else {
 			Routes.push(<Route key={path} path={path} exact component={Component} />)
 		}
-	})
+	}
 
 	return {
 		Routes: Redirects.concat(Routes),
@@ -98,24 +118,34 @@ const createRoutes = routes => {
 				{
 					path: 'a',
 					redirect: '/a/a/a',
-					notFound: NotFound12,
+					notFound: NotFound2,
 					component: Wrap2,
 					children: [
 						{
 							path: 'a',
-							component: Home,
+							component: AAA,
 						},
 						{
 							path: 'b',
-							component: Home,
+							component: AAB,
 						},
 					],
 				},
 				{
 					path: 'b',
-					component: Home,
+					component: AB,
 				},
 			],
+		},
+		{
+			path: '/b',
+			redirect: '/b/a',
+			children: [
+				{
+					path: 'a',
+					component: BA,
+				}
+			]
 		},
 	]
 
@@ -125,6 +155,7 @@ const createRoutes = routes => {
 
 	<Redirect path={'/a'} to={'/a/a'} exact />
 	<Redirect path={'/a/a'} to={'/a/a/a'} exact />
+	<Redirect path={'/b'} to={'/b/a'} exact />
 	<Route path={'/'} exact component={Home} />
 	<Route path={'/a'}>
 		{props =>
@@ -134,18 +165,23 @@ const createRoutes = routes => {
 						{props =>
 							<Wrap2 {...props}>
 								<Switch>
-									<Route path={'/a/a/a'} exact component={Home} />
-									<Route path={'/a/a/b'} exact component={Home} />
+									<Route path={'/a/a/a'} exact component={AAA} />
+									<Route path={'/a/a/b'} exact component={AAB} />
 									<Route component={NotFound2} />
 								</Switch>
 							</Wrap2>
 						}
 					</Route>
-					<Route path={'/a/b'} exact component={Home} />
+					<Route path={'/a/b'} exact component={AB} />
 					<Route component={NotFound1} />
 				</Switch>
 			</Wrap1>
 		}
+	</Route>
+	<Route path={'/b'}>
+		<Switch>
+			<Route path={'/b/a'} exact component={BA} />
+		</Switch>
 	</Route>
 */
 export default createRoutes
