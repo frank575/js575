@@ -3,7 +3,7 @@
  * @param {HTMLElement} newNode
  * @param {HTMLElement} existingNode
  */
-const insertBefore = (newNode, existingNode) => {
+export const insertBefore = (newNode, existingNode) => {
 	const parent = existingNode.parentNode
 
 	if (parent.firstChild === existingNode) {
@@ -12,5 +12,3 @@ const insertBefore = (newNode, existingNode) => {
 		parent.insertBefore(newNode, existingNode)
 	}
 }
-
-export default insertBefore

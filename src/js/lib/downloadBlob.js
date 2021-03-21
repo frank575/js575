@@ -4,7 +4,7 @@
  * @param {string} fileName
  * @param {string} fileType
  */
-const downloadBlob = (blob, fileName, fileType) => {
+export const downloadBlob = (blob, fileName, fileType) => {
 	const url = window.URL.createObjectURL(new Blob([blob]))
 	const link = document.createElement('a')
 	link.style.display = 'none'
@@ -13,5 +13,3 @@ const downloadBlob = (blob, fileName, fileType) => {
 	document.body.appendChild(link)
 	link.click()
 }
-
-export default downloadBlob

@@ -3,7 +3,7 @@
  * @param {HTMLElement} newNode
  * @param {HTMLElement} existingNode
  */
-const insertAfter = (newNode, existingNode) => {
+export const insertAfter = (newNode, existingNode) => {
 	const parent = existingNode.parentNode
 
 	if (parent.lastChild === existingNode) {
@@ -12,5 +12,3 @@ const insertAfter = (newNode, existingNode) => {
 		parent.insertBefore(newNode, existingNode.nextSibling)
 	}
 }
-
-export default insertAfter

@@ -5,7 +5,7 @@ import { useEffect, useState, Dispatch } from 'react'
  * @template T
  * @type {function(symbol: Symbol, initialValue: T): [T, Dispatch<T>]}
  */
-const useStorageState = (() => {
+export const useStorageState = (() => {
 	const CACHE = {}
 	return (symbol, initialValue) => {
 		const [state, setState] = useState(CACHE[symbol] ?? initialValue)
@@ -15,5 +15,3 @@ const useStorageState = (() => {
 		return [state, setState]
 	}
 })()
-
-export default useStorageState

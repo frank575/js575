@@ -15,12 +15,10 @@ const stop = state => () => {
  * requestAnimationFrame 封裝
  * @returns {{stop: function(): void, start: function(fun: function(): void): void}}
  */
-const aniFrame = () => {
+export const aniFrame = () => {
 	let state = { timer: null }
 	return {
 		start: start(state),
 		stop: stop(state),
 	}
 }
-
-export default aniFrame

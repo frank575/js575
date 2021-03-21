@@ -3,7 +3,7 @@
  * @param {number | string} value
  * @return {string} 拷貝的值
  */
-const copyText = value => {
+export const copyText = value => {
 	const copy = typeof value === 'number' ? String(value) : value
 	if (typeof copy !== 'string') {
 		console.warn('copyText: value 必須為 number 或 string')
@@ -18,5 +18,3 @@ const copyText = value => {
 	}
 	return copy
 }
-
-export default copyText

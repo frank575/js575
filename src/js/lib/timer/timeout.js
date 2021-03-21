@@ -32,7 +32,7 @@ const stop = state => () => {
  * @template T
  * @returns {{stop: function(): void, start: function(fun: function(): void, delay: number = 0): void, startSync: function(function() :Promise<T>, delay: number = 0): Promise<T>}}
  */
-const timeout = () => {
+export const timeout = () => {
 	const state = { timer: null }
 	return {
 		start: start(state),
@@ -40,5 +40,3 @@ const timeout = () => {
 		stop: stop(state),
 	}
 }
-
-export default timeout

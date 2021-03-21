@@ -15,12 +15,10 @@ const stop = state => () => {
  * @template T
  * @returns {{stop: function(): void, start: function(fun: function(): void, delay: number = 0): void}}
  */
-const interval = () => {
+export const interval = () => {
 	const state = { timer: null }
 	return {
 		start: start(state),
 		stop: stop(state),
 	}
 }
-
-export default interval

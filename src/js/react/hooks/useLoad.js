@@ -14,7 +14,7 @@ import {
  * @param {{append?: (HTMLElement | MutableRefObject<HTMLElement>), run?: (string | boolean | Array.<string, ...*>)}} [options= { run: 'run' }] options
  * @returns {{error: string, pending: Object.<keyof T, boolean>, loading: boolean, exec: (T & { run: function(...args): Promise<*> })}}
  */
-const useLoad = (promiseFun, options) => {
+export const useLoad = (promiseFun, options) => {
 	const isFun = useMemo(() => typeof promiseFun === 'function', [promiseFun])
 	const run = useRef(options?.run ?? 'run')
 	const append = useRef(options?.append)
@@ -84,5 +84,3 @@ const useLoad = (promiseFun, options) => {
 		exec,
 	}
 }
-
-export default useLoad

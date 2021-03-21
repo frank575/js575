@@ -13,7 +13,7 @@ import { Redirect, Route, Switch } from 'react-router-dom'
  * @param {Route[]} routes
  * @returns {{Routes: React.ReactNode[]}}
  */
-const createRoutes = routes => {
+export const createRoutes = routes => {
 	const Redirects = []
 	const Routes = []
 	const recurMap = (
@@ -183,4 +183,3 @@ const createRoutes = routes => {
 		</Switch>
 	</Route>
 */
-export default createRoutes

@@ -2,7 +2,7 @@
  * 數字加逗號，step(參數2)為多少位加逗號，預設千非位
  * @type {function(price: string | number, step: number): string}
  */
-const stepPrice = (() => {
+export const stepPrice = (() => {
 	const ds = {}
 	const createStepD = step =>
 		(ds[step] = Array.from(new Array(step), (_, i) => i).reduce(
@@ -24,5 +24,3 @@ const stepPrice = (() => {
 		return _price
 	}
 })()
-
-export default stepPrice

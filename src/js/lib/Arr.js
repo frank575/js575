@@ -53,7 +53,7 @@ const splice = (from, to, ...value) => {
 	return arr => [...arr.slice(0, from), ...value, ...arr.slice(from + to)]
 }
 
-export default {
+export const Arr = {
 	update,
 	unshift,
 	push,

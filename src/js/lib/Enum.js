@@ -4,7 +4,7 @@
  * @param {T} obj
  * @return {T & {t(val: any): string, key(val: any): string}}
  */
-const Enum = obj => {
+export const Enum = obj => {
 	const translation = {}
 	const reverseEnum = {}
 	const $enum = {}
@@ -29,5 +29,3 @@ const Enum = obj => {
 
 	return { ...$enum, t, key }
 }
-
-export default Enum

@@ -411,7 +411,7 @@ const thisMonth = ft => monthResult(false, ft)
  */
 const lastMonth = ft => monthResult(true, ft)
 
-const vtime = {
+export const vtime = {
 	format,
 	countdown,
 	today,
@@ -425,5 +425,3 @@ const vtime = {
 	thisMonth,
 	lastMonth,
 }
-
-export default vtime

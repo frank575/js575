@@ -1,3 +1,3 @@
-import createRoutes from './createRoutes'
+import { createRoutes } from './createRoutes'
 
 export { createRoutes }
