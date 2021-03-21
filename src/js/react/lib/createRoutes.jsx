@@ -1,4 +1,5 @@
-import { Redirect, Route, Switch, ReactElement } from 'react-router-dom'
+import { ReactElement } from 'react'
+import { Redirect, Route, Switch } from 'react-router-dom'
 
 /**
  * 路由生成器
