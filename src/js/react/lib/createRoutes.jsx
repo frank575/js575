@@ -1,17 +1,17 @@
-import { Redirect, Route, Switch } from 'react-router-dom'
+import { Redirect, Route, Switch, ReactElement } from 'react-router-dom'
 
 /**
  * 路由生成器
  *
  * @typedef {Object} Route
  * @property {string} path
- * @property {React.ReactNode} component
- * @property {React.ReactNode} notFound
+ * @property {ReactElement} component
+ * @property {ReactElement} notFound
  * @property {*} redirect
  * @property {Route[]} children
  *
  * @param {Route[]} routes
- * @returns {{Routes: React.ReactNode[]}}
+ * @returns {{Routes: ReactElement[]}}
  */
 export const createRoutes = routes => {
 	const Redirects = []
