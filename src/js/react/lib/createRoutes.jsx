@@ -51,7 +51,7 @@ export const createRoutes = routes => {
 						const routes = [
 							<Route
 								key={concatPath}
-								path={path}
+								path={concatPath}
 								exact
 								component={Component}
 							/>,
