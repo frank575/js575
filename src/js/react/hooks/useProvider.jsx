@@ -1,15 +1,23 @@
-import { createContext, useContext } from 'react'
+import { createContext } from 'react'
+import { useContextSelector } from 'use-context-selector'
 
+/**
+ * @template T
+ * @typedef {T} ProviderService
+ */
 /**
  * 創建供給者
  * @template T
- * @param {function(): T} providerService
- * @return {{inject: function(): T, Provider: function({children: *}): *}}
+ * @param {function(): ProviderService} providerService
+ * @return {{inject: function(callback: function(state: ProviderService): T): T, Provider: function({children: *}): *}}
  */
 export const useProvider = providerService => {
 	const Context = createContext(null)
-	const Provider = ({ children }) => <Context.Provider value={providerService()}>{children}</Context.Provider>
-	const inject = () => useContext(Context)
+	const Provider = ({ children }) => (
+		<Context.Provider value={providerService()}>{children}</Context.Provider>
+	)
+	const inject = (callback = state => undefined) =>
+		useContextSelector(Context, callback)
 
 	return {
 		Provider,
