@@ -1,7 +1,4 @@
-import {
-	useCallback,
-	useState,
-} from 'react'
+import { useCallback, useState } from 'react'
 
 /**
  * loading 鉤子
