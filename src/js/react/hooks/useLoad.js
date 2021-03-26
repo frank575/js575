@@ -2,7 +2,7 @@ import { useCallback, useState } from 'react'
 
 /**
  * loading 鉤子
- * @returns {[{loading: boolean} & Object.<string, boolean | undefined>, (function(asyncFun: Promise<void>, keys?: string[]): Promise<void>)]}
+ * @returns {[{loading: boolean | undefined} & Object.<string, boolean | undefined>, (function(asyncFun: Promise<void>, keys?: string[]): Promise<void>)]}
  */
 export const useLoad = () => {
 	const [loading, setLoading] = useState({ loading: false })
